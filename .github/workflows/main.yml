@@ -26,7 +26,7 @@ jobs:
           sudo chown ubuntu:ubuntu /home/ubuntu/.vnc
           touch /home/ubuntu/.vnc/passwd 
           sudo chown ubuntu:ubuntu /home/ubuntu/.vnc/passwd
-          chmod 600 /home/ubuntu/.vnc/passwd
+          sudo chmod 666 /home/ubuntu/.vnc/passwd
           /etc/init.d/ssh start & /usr/libexec/tigervncsession-start :8 & echo -e 'ubuntu' | vncpasswd -f > /home/ubuntu/.vnc/passwd & while true; do sudo -u ubuntu vncserver -fg -v; done &
       - name: Start Additional Services
         run: |
