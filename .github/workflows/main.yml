@@ -10,7 +10,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update -q --fix-missing && sudo apt upgrade -y
-          apt -y install --no-install-recommends sudo wget curl dbus-x11 xinit openssh-server xfce4 ca-certificates unzip git xfonts-base tightvncserver tigervnc-viewer websockify novnc
+          sudo apt -y install --no-install-recommends sudo wget curl dbus-x11 xinit openssh-server xfce4 ca-certificates unzip git xfonts-base tightvncserver tigervnc-viewer websockify novnc
           sudo apt -y install locales
           sudo sed -i s/^#\ en_US.UTF-8\ UTF-8/en_US.UTF-8\ UTF-8/ /etc/locale.gen
           sudo locale-gen
