@@ -1,0 +1,38 @@
+name: Cl
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt update -q --fix-missing && apt upgrade -y
+          apt -y install --no-install-recommends sudo wget curl dbus-x11 xinit openssh-server xfce4 ca-certificates unzip git xfonts-base tightvncserver tigervnc-viewer websockify novnc
+          sudo apt -y install locales
+          sudo sed -i s/^#\ en_US.UTF-8\ UTF-8/en_US.UTF-8\ UTF-8/ /etc/locale.gen
+          sudo locale-gen
+          sudo apt -y install --no-install-recommends 
+          sudo useradd -m -s /bin/bash -G sudo ubuntu
+          echo "ubuntu:Pa$$w0rd10" | sudo chpasswd
+          sudo rm /etc/xdg/autostart/xfce4-power-manager.desktop >/dev/null 2>&1
+          sudo apt -y install --no-install-recommends tigervnc-standalone-server tigervnc-tools
+          sudo echo ":8=ubuntu" | sudo tee -a /etc/tigervnc/vncserver.users
+          sudo echo '$localhost = "no";' | sudo tee -a /etc/tigervnc/vncserver-config-mandatory
+          sudo echo '$SecurityTypes = "VncAuth";' | sudo tee -a /etc/tigervnc/vncserver-config-mandatory
+          sudo mkdir -p /home/ubuntu/.vnc
+          sudo chown ubuntu:ubuntu /home/ubuntu/.vnc
+          touch /home/ubuntu/.vnc/passwd 
+          sudo chown ubuntu:ubuntu /home/ubuntu/.vnc/passwd
+          chmod 600 /home/ubuntu/.vnc/passwd
+          /etc/init.d/ssh start & /usr/libexec/tigervncsession-start :8 & echo -e 'ubuntu' | vncpasswd -f > /home/ubuntu/.vnc/passwd & while true; do sudo -u ubuntu vncserver -fg -v; done &
+      - name: Start Additional Services
+        run: |
+          wget -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x cloudflared
+          chmod +x cloudflared
+          wget https://github.com/novnc/noVNC/archive/refs/tags/v1.5.0.zip
+          unzip v1.5.0.zip
+          git clone https://github.com/novnc/websockify ./noVNC-1.5.0/utils/websockify
+          tightvncserver & ./noVNC-1.5.0/utils/novnc_proxy --vnc localhost:5901 & ./cloudflared --url http://localhost:6080 --no-tls-verify & ./cloudflared --url tcp://localhost:5908 --no-tls-verify & while true; do echo "skib"; sleep 60; done
