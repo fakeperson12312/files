@@ -14,10 +14,10 @@ jobs:
           sudo apt -y install locales
           sudo sed -i s/^#\ en_US.UTF-8\ UTF-8/en_US.UTF-8\ UTF-8/ /etc/locale.gen
           sudo locale-gen
-          sudo apt -y install --no-install-recommends 
+          # sudo apt -y install --no-install-recommends 
           sudo useradd -m -s /bin/bash -G sudo ubuntu
           echo "ubuntu:Pa$$w0rd10" | sudo chpasswd
-          sudo rm /etc/xdg/autostart/xfce4-power-manager.desktop >/dev/null 2>&1
+          # sudo rm /etc/xdg/autostart/xfce4-power-manager.desktop >/dev/null 2>&1
           sudo apt -y install --no-install-recommends tigervnc-standalone-server tigervnc-tools
           sudo echo ":8=ubuntu" | sudo tee -a /etc/tigervnc/vncserver.users
           sudo echo '$localhost = "no";' | sudo tee -a /etc/tigervnc/vncserver-config-mandatory
